@@ -1,0 +1,186 @@
+---
+title: "Small Islands, Big Impact: Why Earth Day Matters More Than Ever"
+subtitle: Data Required to Track Progress
+title-block-banner-color: "#FFDDFF"
+css: "styles.css"
+author: Martina Regis
+date: "14 April 2025"
+date-format: "MMMM YYYY"
+toc: true
+number-sections: false  
+theme: cerulean 
+format:
+  html:  
+    fig-width: 8
+    fig-height: 8
+    grid:
+      sidebar-width: 12px
+      body-width: 900px
+    code-fold: false
+    embed-resources: true
+    toc-location: right
+    toc-title: "Contents"
+    fontsize: 1.1em
+    linestretch: 1.5
+    backgroundcolor: '#ffffff'
+embed-resources: true
+brand: true 
+execute:
+  echo: false  
+  warning: false
+---
+
+```{r}
+#| label: load-pkgs
+#| code-summary: "Packages"
+#| echo: false
+#| message: false
+#| warning: false
+
+library(wbstats)    # for data
+library(tidyverse)  # for data wrangling
+library(knitr)      # for tables
+library(broom)      # for model summary
+
+library(ggplot2)
+library(dplyr)
+
+my_palette<- c("#122c34", 
+               "#224870", 
+               "#2a4494", 
+               "#4ea5d9", 
+               "#44cfcb", 
+               "#437c90", 
+               "#255957", 
+               "#eeebd3", 
+               "#a98743", 
+               "#f7c548")
+```
+
+![Photo credit: Recycled Mats](plastics.jpg)
+
+```{r}
+#| warning: false
+#| echo: false
+#| error: false
+
+library(tidyverse)
+library(ggplot2)
+library(maps)
+library(scales)
+```
+
+Every year on 22 April, the world observes World Earth Day, a global event dedicated to raising awareness about environmental protection and promoting sustainable practices. It serves as a crucial reminder of our collective responsibility to safeguard the planet for current and future generations. The theme of Earth Day this year is “Our Power, Our Planet.” The day's events include local community initiatives, all aimed at driving action towards a healthier environment. The World Economic Forum's Global Risks Report 2025 finds that environmental risks make up half of the top 10 risks over the next 10 years.
+
+# The Evolution
+
+Originally focused on recycling, reduced energy consumption, and water conservation in the 1970s, Earth Day has evolved to address a much broader range of issues today, from mitigating climate change impacts to promoting environmental justice. For small island states, the importance of Earth Day is particularly pronounced, given their heightened vulnerability to these environmental challenges—perhaps making every day Earth Day.
+
+Data plays a pivotal role in our fight for sustainability. By gathering and analyzing information on various environmental indicators, we can gain a deeper understanding of our progress, identify areas where we are falling short, and develop more effective strategies. 
+
+# Recycing Policies
+
+In recent years, many regional governments have taken significant steps to curb plastic pollution, with single-use plastic bag bans being a common starting point. Policies aimed at banning single-use plastics are increasingly being adopted around the world, driven by insights from behavioral economics. These policies recognize that human behavior is often influenced by defaults, framing, and salience. For instance, a ban shifts the default option from using a plastic bag to bringing a reusable one, significantly increasing the likelihood of the latter. Similarly, charging a fee for plastic bags makes their use more salient, prompting consumers to consider the environmental cost of their choices.
+
+# Plastics - Threat to SIDS Sustainability 
+
+The economic, ecological, and social consequences of single-use plastic pollution are far-reaching, particularly for marine life and small island states. Plastic waste negatively impacts economies by harming tourism, fisheries, and shipping industries. Marine life is severely affected, with ingestion, entanglement, and habitat destruction leading to decreased biodiversity and potential seafood contamination. Small island developing states (SIDS), despite contributing minimally to plastic pollution, face disproportionate impacts due to their reliance on marine resources and vulnerability to ocean currents that carry plastic waste to their shores.
+
+The Caribbean, surrounded by coastline, is particularly vulnerable to the pervasive threat of plastic pollution. However, this problem is not unique to the region but affects every corner of the globe, with eight million tons of plastic entering the ocean each year.
+
+# Charting Progress
+
+Today, on Earth Day, it is important to explore the gains the world has made in one area - recycling and using plastics. How have countries fared? Have policies on recycling been effective? What more can be done? 
+
+@fig-plastic illustrates global trends in plastic recycling rates. Comparing 2000 and 2019. Overall, the data reveals a general increase in recycling percentages across all regions. Notably, India and China demonstrated the most substantial improvements in recycling rates between 2000 and 2019, spearheading the gains. While progress has been made, the chart also highlights that recycling rates remain relatively low globally, emphasizing the continued need for more robust recycling programs and a shift towards reducing plastic consumption.
+
+<center>
+
+```{r}
+#| echo: false
+#| warning: false
+#| label: fig-plastic
+#| fig-cap: "Recycling Trends"
+# Data #from our world in data
+data <- data.frame(
+  Region = c("India", "China", "Europe", "Americas (excl. USA)", 
+             "Asia (excl. China and India)", "Oceania", "Sub-Saharan Africa", 
+             "Middle East & North Africa", "United States", "World"),
+  Year_2000 = c(5.1, 4.8, 4.4, 4.7, 3.8, 3.8, 3.0, 2.8, 2.3, 3.7),
+  Year_2019 = c(13.3, 12.8, 12.4, 9.6, 8.4, 6.9, 5.7, 5.4, 4.5, 9.3)
+)
+
+# Reshape the data for ggplot2 (long format)
+data_long <- data %>%
+  tidyr::pivot_longer(cols = c(Year_2000, Year_2019), 
+                      names_to = "Year", 
+                      values_to = "Recycling_Rate") %>%
+  mutate(Year = gsub("Year_", "", Year)) # Clean up year labels
+
+# Order regions by 2019 values (for consistent ordering)
+data_long <- data_long %>%
+  arrange(desc(Recycling_Rate)) %>%
+  mutate(Region = factor(Region, levels = unique(Region)))
+
+# Create the stacked bar chart
+ggplot(data_long, aes(x = Region, y = Recycling_Rate, fill = Year)) +
+  geom_bar(stat = "identity", position = "dodge") + # Stacked bar
+  coord_flip()+
+  
+  # Color Palette (consistent with image)
+  scale_fill_manual(values = c("2000" = my_palette[2], "2019" = my_palette[5]),
+                    name = "Year") +
+  
+# Add title and source
+  labs(title = "World Making Modest Gains in Plastic Recycling",
+       subtitle = "Share of plastic waste that is recycled (in %)",
+       caption = "Source: OECD via Our World in Data",
+       x = "",  # Remove x-axis label
+       y = "Recycling Rate (%)") +
+  
+  # Adjust theme for visual similarity
+  theme_minimal() +
+  theme(
+    legend.position = "bottom",
+    plot.title = element_text(size = 14, face = "bold", color = "#222222"),
+    plot.subtitle = element_text(size = 10, color = "#555555"),
+    axis.text.x = element_text(angle = 0, hjust=1, vjust=0.5, size = 10, color = "#222222"), # Rotated x-axis labels
+    axis.text.y = element_text(size = 10, color = "#222222"),
+    axis.title.y = element_text(size = 12, color = "#222222"),
+    legend.title = element_blank(),
+    legend.text = element_text(size = 10, color = "#222222"),
+    legend.key.size = unit(0.5, "lines"),
+    plot.caption = element_text(size = 8, color = "#777777", hjust = 1), # Left-justified caption
+    panel.grid.major.x = element_blank(), # Remove vertical gridlines
+    panel.grid.minor.x = element_blank(),
+    panel.grid.major.y = element_line(color = "#E0E0E0", size = 0.5), # Lighter horizontal gridlines
+    plot.margin = margin(t = 10, r = 10, b = 10, l = 10)
+  ) +
+  
+  # Add value labels to the bars
+  geom_text(
+    aes(label = Recycling_Rate, group = Year), # label for each bar
+    position = position_dodge(width = 0.9),  # same dodge width as bars
+    vjust = 0.5,  # Adjust vertical position of labels
+    hjust = -0.1,
+    size = 3,
+    color = "black"
+  ) +
+  
+  # Adjust the y-axis scale to start from 0 and have clear breaks
+  scale_y_continuous(limits = c(0, 16), breaks = seq(0, 16, by = 2))
+```
+
+</center>
+
+# More Action Needed
+
+While recent policy efforts have largely concentrated on curbing the use of single-use plastic shopping bags, it's crucial to acknowledge that these measures alone may be insufficient to address the scale of the plastic pollution crisis. Plastic shopping bags represent only a fraction of overall plastic consumption, with substantial volumes still utilized in global packaging, including in shipping, disposable water bottles, cosmetics and food packaging. The limited number of recycling facilities, the prevalence of indiscriminate dumping practices, and the lack of widespread public education regarding the dangers of plastic pollution further exacerbate the problem. A more holistic approach is needed, encompassing a broader range of plastic products and prioritizing comprehensive waste management solutions and public awareness campaigns. We also need ways to track our progress.
+
+# Data - A Problem or Solution?
+
+To effectively manage plastics, data is essential for pinpointing areas needing policy intervention and for aligning actions with global agreements made.  Policies should be accompanied by data tracking to ensure objectives are met. We often suggest that climate action is affected by data limitations. Let's no longer make data the problem but the solution by identifying ways to collect the onformation needed to improve policy-making. 
+
+Effective measurement enables effective management, allowing us to adjust our course and achieve our sustainability goals.
+
+As we celebrate Earth Day on 22 April, it is the perfect opportunity to reflect on our planet's health and how we can make a positive impact through sustainable living. 
