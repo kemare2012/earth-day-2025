@@ -70,7 +70,7 @@ library(maps)
 library(scales)
 ```
 
-Every year on 22 April, the world observes World Earth Day, a global event dedicated to raising awareness about environmental protection and promoting sustainable practices. It serves as a crucial reminder of our collective responsibility to safeguard the planet for current and future generations. The theme of Earth Day this year is “Our Power, Our Planet.” The day's events include local community initiatives, all aimed at driving action towards a healthier environment. The World Economic Forum's Global Risks Report 2025 finds that environmental risks make up half of the top 10 risks over the next 10 years.
+Every year on 22 April, the world observes World Earth Day, a global event dedicated to raising awareness about environmental protection and promoting sustainable practices. It serves as a crucial reminder of our collective responsibility to safeguard the planet for current and future generations. The theme of Earth Day this year is “Our Power, Our Planet.” The day's events include local community initiatives, all aimed at driving action towards a healthier environment. The [World Economic Forum's Global Risks Report 2025](https://www.weforum.org/publications/global-risks-report-2025/) finds that environmental risks make up half of the top 10 risks over the next 10 years.
 
 # The Evolution
 
